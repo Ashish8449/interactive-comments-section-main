@@ -73,14 +73,12 @@ function getData() {
       console.log(data);
       usersData = data;
       console.log(data.comments);
-      chatBox.innerHTML = data.comments
-        .map((comment) =>
-          // div.innerHTML = setData(comment);
-          // div.querySelector(".reply");
-          // console.log(div);
-          setData(comment)
-        )
-        .join("");
+      chatBox.innerHTML = data.comments.forEach((comment) => {
+        const div = document.createElement("div");
+        div.innerHTML = setData(comment);
+        console.log(div);
+        chatBox.appendChild(div);
+      });
 
       // console.log(usersData);
     });
