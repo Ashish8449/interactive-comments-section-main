@@ -93,7 +93,7 @@ body {
   height: 40px;
 }
 .comment {
-  padding: 10px 20px 0 10px;
+  /* padding: 10px 20px 0 10px; */
   line-height: 25px;
   font-size: 16px;
 }
@@ -188,7 +188,7 @@ p {
   border-radius: 5px;
   padding: 5px 10px 10px 10px;
 }
-.ReplyDiv {
+.replyDivs {
   width: calc(100% - 40px);
   position: relative;
   right: -40px;

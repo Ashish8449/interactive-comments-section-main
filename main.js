@@ -63,7 +63,7 @@ function setData(obj) {
 =============================================================================*/
 
 function commentBox(obj) {
-  return `     <div class="chatDiv ReplyDiv "data-value=3>
+  return `     <div class="chatDiv  "data-value=3>
 
 
   <div class="row outsideDiv">
@@ -74,7 +74,7 @@ function commentBox(obj) {
           <img src="./images/icon-plus.svg" alt="" srcset="">
         </div>
         <div class="number">
-          5
+        ${obj.score}
         </div>
         <div class="minus">
           <img src="./images/icon-minus.svg" alt="" srcset="">
@@ -90,16 +90,16 @@ function commentBox(obj) {
         <div class="col8 row">
           <div>
 
-            <img src="./images/avatars/image-maxblagun.png" alt="">
+            <img src="${obj.user.image.png}" alt="">
           </div>
           <div class="userName">
-            juliusomo
+          ${obj.user.username}
           </div>
           <div class="You">
            You
           </div>
           <div class="time">
-            2 weeks ago
+          ${obj.createdAt}
           </div>
 
         </div>
@@ -124,7 +124,7 @@ function commentBox(obj) {
       </div>
 
       <p class="comment" contentEditable="false" >
-       ${obj.comment}
+       ${obj.content}
 
       </p>
 
@@ -229,7 +229,17 @@ function divFunc(e) {
     =============================================================================*/
     function addComment(msg) {
       const commentDiv = document.createElement("div");
-      const comment = commentBox(msg);
+      const obj = {
+        content: `${msg}`,
+        createdAt: `1 min ago`,
+        id: 1,
+        replies: [],
+
+        score: 12,
+        user: usersData.currentUser,
+      };
+
+      const comment = commentBox(obj);
       commentDiv.innerHTML = comment;
       insertAfter(currentElement, commentDiv);
       commentDiv.addEventListener("click", commentFunc);
@@ -237,7 +247,7 @@ function divFunc(e) {
     }
 
     /*=============================================================================
-                             input funtions                                                  
+                         input funtions                                                  
 =============================================================================*/
     function clickOnSend(e) {
       const input = div.querySelector(".textArea");
@@ -249,12 +259,16 @@ function divFunc(e) {
       }
     }
     /*=============================================================================
-                                 events                                                  
-    =============================================================================*/
+                             events                                                  
+=============================================================================*/
 
     replyBtn.addEventListener("click", clickOnSend);
   }
 }
+
+/*=============================================================================
+                             code start from here                                                  
+=============================================================================*/
 
 function getData() {
   fetch("./data.json")
@@ -262,15 +276,40 @@ function getData() {
     .then((data) => {
       console.log(data);
       usersData = data;
-      // console.log(data.comments);
+
       data.comments.forEach((comment) => {
         const div = document.createElement("div");
 
         div.innerHTML = setData(comment);
         chatBox.appendChild(div);
+
+        // to store replies
+
+        const replyDivs = document.createElement("div");
+        replyDivs.classList.add("replyDivs");
+        let check = 0;
         comment.replies.forEach((reply) => {
-         
+          check = 1;
+          const replyDiv = document.createElement("div");
+          if (reply.user.username == "juliusomo") {
+            replyDiv.innerHTML = commentBox(reply);
+            /*=============================================================================
+                                         event on click  commentBox                                                  
+            =============================================================================*/
+            replyDiv.addEventListener("click", commentFunc);
+          } else {
+            replyDiv.innerHTML = setData(reply);
+
+            /*=============================================================================
+                                         add event in reply div                                                  
+            =============================================================================*/
+            replyDiv.addEventListener("click", divFunc);
+          }
+          replyDivs.appendChild(replyDiv);
         });
+        if (check) {
+          insertAfter(div, replyDivs);
+        }
 
         /*=============================================================================
                                      addevent listner                                                  
