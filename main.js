@@ -1,8 +1,19 @@
 const chatBox = document.querySelector(".rapper");
 
 const container = document.querySelector(".container");
+const sendBtn = document.querySelector(".sendBtn");
 
-let usersData;
+const sendReply = document.querySelector(".sendReply");
+
+let usersData = JSON.parse(localStorage.getItem("users"));
+let numberofdiv = 0;
+/*=============================================================================
+                             update Ls                                                  
+=============================================================================*/
+
+function updateLs() {
+  localStorage.setItem("users", JSON.stringify(usersData));
+}
 
 function setData(obj) {
   const chat = ` <div class="chatDiv " data-value=${obj.id}>
@@ -11,13 +22,13 @@ function setData(obj) {
       <!-- plus icons  -->
       <div class="additem">
         <div class="add">
-          <img src="./images/icon-plus.svg" alt="" srcset="">
+          <img src="./images/icon-plus.svg"   class="add"alt="" srcset="">
         </div>
         <div class="number">
           ${obj.score}
         </div>
         <div class="minus">
-          <img src="./images/icon-minus.svg" alt="" srcset="">
+          <img src="./images/icon-minus.svg"  class="minus" alt="" srcset="">
         </div>
      </div>
     </div>
@@ -63,7 +74,7 @@ function setData(obj) {
 =============================================================================*/
 
 function commentBox(obj) {
-  return `     <div class="chatDiv  "data-value=3>
+  return `     <div class="chatDiv  "data-value= >
 
 
   <div class="row outsideDiv">
@@ -71,13 +82,13 @@ function commentBox(obj) {
  
       <div class="additem">
         <div class="add">
-          <img src="./images/icon-plus.svg" alt="" srcset="">
+          <img src="./images/icon-plus.svg"  class="add" alt="" srcset="">
         </div>
         <div class="number">
         ${obj.score}
         </div>
         <div class="minus">
-          <img src="./images/icon-minus.svg" alt="" srcset="">
+          <img src="./images/icon-minus.svg" class="minus" alt="" srcset="">
         </div>
 
 
@@ -172,9 +183,15 @@ function insertAfter(referenceNode, newNode) {
 function commentFunc(e) {
   const target = e.target;
   const currentTarget = e.currentTarget;
+  const number = currentTarget.querySelector(".number");
+  const chatDiv = currentTarget.querySelector(".chatDiv");
+  console.log(chatDiv);
+  const boxNum = chatDiv.dataset.value;
+  console.log(boxNum);
   if (target.classList.contains("delete")) {
     currentTarget.remove();
-  } else if (target.classList.contains("edit")) {
+  }
+  if (target.classList.contains("edit")) {
     const content = currentTarget.querySelector("p");
 
     if (content.contentEditable == "true") {
@@ -203,53 +220,85 @@ function commentFunc(e) {
       });
     }
   }
+  if (target.classList.contains("add")) {
+    number.innerHTML++;
+  }
+  if (target.classList.contains("minus")) {
+    if (number.innerHTML>0) number.innerHTML--;
+  }
 }
 
 /*=============================================================================
                               functions for div                                                  
  =============================================================================*/
+
 function divFunc(e) {
   const currentElement = e.currentTarget;
-  console.log(currentElement);
 
   console.log(currentElement);
   const chatDiv = currentElement.querySelector(".chatDiv");
-  console.log(chatDiv.dataset.value);
+  const nextSibling = currentElement.nextSibling;
+  const boxNum = chatDiv.dataset.value;
   const target = e.target;
+  const number = currentElement.querySelector(".number");
+  const obj = {
+    content: ``,
+    createdAt: `1 min ago`,
+    id: numberofdiv,
+    replies: [],
 
-  if (target.classList.contains("reply")) {
+    score: 0,
+    user: usersData.currentUser,
+  };
+
+  /*=============================================================================
+                             click on reply                                                  
+=============================================================================*/
+
+  if (
+    target.classList.contains("reply") &&
+    !nextSibling.querySelector(".commentReply")
+  ) {
     const div = document.createElement("div");
     div.innerHTML = replyDiv();
     const replyBtn = div.querySelector(".replyBtn");
-    console.log(replyBtn);
+
     insertAfter(currentElement, div);
 
     /*=============================================================================
                                  add comment div                                                  
     =============================================================================*/
     function addComment(msg) {
+      obj.content = msg;
+      obj.id = ++numberofdiv;
       const commentDiv = document.createElement("div");
-      const obj = {
-        content: `${msg}`,
-        createdAt: `1 min ago`,
-        id: 1,
-        replies: [],
 
-        score: 12,
-        user: usersData.currentUser,
-      };
+      console.log(e.target);
+
+      /*=============================================================================
+                                   add data to ls                                                  
+      =============================================================================*/
+
+      updateLs();
+
+      /*=============================================================================
+                                   added succesfully                                                  
+      =============================================================================*/
 
       const comment = commentBox(obj);
+
       commentDiv.innerHTML = comment;
-      insertAfter(currentElement, commentDiv);
       commentDiv.addEventListener("click", commentFunc);
+      console.log(currentElement.nextSibling.nextSibling);
+
+      currentElement.nextSibling.nextSibling.appendChild(commentDiv);
       div.remove();
     }
 
     /*=============================================================================
                          input funtions                                                  
 =============================================================================*/
-    function clickOnSend(e) {
+    function clickOnReply(e) {
       const input = div.querySelector(".textArea");
       console.log(input);
       const msg = input.innerHTML;
@@ -262,7 +311,35 @@ function divFunc(e) {
                              events                                                  
 =============================================================================*/
 
-    replyBtn.addEventListener("click", clickOnSend);
+    replyBtn.addEventListener("click", clickOnReply);
+  }
+
+  function updateScore() {
+    usersData.comments.forEach((item) => {
+      if (item.id == boxNum) {
+        console.log(item);
+        item.score = number.innerText;
+      }
+    });
+  }
+
+  if (target.classList.contains("add")) {
+    number.innerText = ++number.innerText;
+    updateScore();
+
+    updateLs();
+  }
+
+  if (target.classList.contains("minus")) {
+    if (number.innerText > 0) {
+      number.innerText = --number.innerText;
+
+      updateScore();
+      updateLs();
+    }
+    /*=============================================================================
+                                 add event lisner on click on add                                                   
+    =============================================================================*/
   }
 }
 
@@ -275,12 +352,14 @@ function getData() {
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
-      usersData = data;
+      console.log(usersData);
+      usersData = usersData ? usersData : data;
 
       data.comments.forEach((comment) => {
         const div = document.createElement("div");
 
         div.innerHTML = setData(comment);
+
         chatBox.appendChild(div);
 
         // to store replies
@@ -291,6 +370,7 @@ function getData() {
         comment.replies.forEach((reply) => {
           check = 1;
           const replyDiv = document.createElement("div");
+
           if (reply.user.username == "juliusomo") {
             replyDiv.innerHTML = commentBox(reply);
             /*=============================================================================
@@ -305,11 +385,15 @@ function getData() {
             =============================================================================*/
             replyDiv.addEventListener("click", divFunc);
           }
+
           replyDivs.appendChild(replyDiv);
         });
-        if (check) {
-          insertAfter(div, replyDivs);
-        }
+
+        insertAfter(div, replyDivs);
+        console.log(div);
+
+        const additem = div.querySelector(".additem");
+        console.log(additem);
 
         /*=============================================================================
                                      addevent listner                                                  
@@ -318,7 +402,53 @@ function getData() {
       });
     });
 }
+/*=============================================================================
+                             click on send                                                  
+=============================================================================*/
+function clickOnSend(e) {
+  if (e.target != sendBtn) return;
+  const div = e.currentTarget;
+  const input = div.querySelector(".textArea");
+  console.log(input);
+  const msg = input.innerHTML;
+  input.innerHTML = "";
+  console.log(msg);
+  if (msg) {
+    const commentDiv = document.createElement("div");
 
-// console.log(document.querySelectorAll(".reply"));
+    console.log(e.target);
+
+    const obj = {
+      content: `${msg}`,
+      createdAt: `1 min ago`,
+      id: usersData.comments.length,
+      replies: [],
+
+      score: 12,
+      user: usersData.currentUser,
+    };
+    /*=============================================================================
+                                   add data to ls                                                  
+      =============================================================================*/
+
+    usersData.comments.push(obj);
+    updateLs();
+
+    /*=============================================================================
+                                   added succesfully                                                  
+      =============================================================================*/
+
+    const comment = commentBox(obj);
+
+    commentDiv.innerHTML = comment;
+    commentDiv.addEventListener("click", commentFunc);
+    chatBox.appendChild(commentDiv);
+  }
+}
+
+/*=============================================================================
+                             main event listners                                                  
+=============================================================================*/
 
 window.addEventListener("load", getData);
+sendReply.addEventListener("click", clickOnSend);

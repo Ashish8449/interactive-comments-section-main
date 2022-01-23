@@ -22,6 +22,10 @@ body {
 
   /* height: 180px; */
 }
+.add,
+.minus {
+  cursor: pointer;
+}
 .additem {
   width: 80%;
 
@@ -111,13 +115,11 @@ body {
 .time {
   color: hsl(211, 10%, 45%);
 }
-.add svg:hover,
-.minus:hover {
-  color: #000;
-
+svg:hover {
   /* display: none; */
   cursor: pointer;
 }
+
 .textArea {
   padding: 8px;
 
@@ -128,12 +130,14 @@ body {
   border-radius: 5px;
 }
 .replyBtn,
-.updateBtn {
+.updateBtn,
+.sendBtn {
   padding: 10px;
   color: #fff;
   background: hsl(238, 40%, 52%);
   border: None;
   border-radius: 5px;
+  cursor: pointer;
 }
 p {
   margin: 10px;
@@ -159,7 +163,7 @@ p {
 }
 .rapper {
   max-width: 700px;
-  padding: 10px;
+
   margin: auto;
   /* border: 2px solid blue; */
 }
@@ -189,7 +193,6 @@ p {
   padding: 5px 10px 10px 10px;
 }
 .replyDivs {
-  width: calc(100% - 40px);
-  position: relative;
-  right: -40px;
+  padding-left: 40px;
+  border-left: 1px solid hsl(239, 57%, 85%);
 }
