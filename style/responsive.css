@@ -1,0 +1,93 @@
+/*=================================================================================
+                             1024
+  ================================================================================*/
+@media (max-width: 1024px) {
+}
+
+/*=================================================================================
+                                   991
+================================================================================*/
+
+@media (max-width: 991px) {
+}
+
+/*=================================================================================
+                                   767
+ ================================================================================*/
+
+@media (max-width: 767px) {
+  .chatDiv,
+  .commentReply {
+    width: calc(100% - 40px);
+    margin: 15px 20px;
+    padding: 10px 10px;
+  }
+  .replyDivs {
+    width: calc(100% - 10px);
+    margin-left: 15px;
+    padding-left: 10px;
+  }
+}
+@media (max-width: 680px) {
+  .replyDivs {
+    padding-left: 15px;
+  }
+  /* .commentReply {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+  .yourImg {
+    width: calc(15% - 5px);
+    margin: 0 5px;
+  }
+  .commentReply .col8 {
+    width: calc(80% - 5px);
+  } */
+}
+/*================================================================================
+                               530                                                   
+  ================================================================================*/
+
+@media (max-width: 550px) {
+  .last-itmes {
+    display: flex;
+  }
+  .last-itmes .col3 {
+    width: calc(35% - 20px);
+    margin: 0 10px;
+  }
+  .outsideDiv .col3 {
+    display: none;
+  }
+  .outsideDiv .col7 {
+    width: calc(100% - 20px);
+    padding: 10px 10px;
+  }
+  .headDiv .col2 {
+    display: none;
+  }
+  .headDiv .col8 {
+    width: calc(100% - 10px);
+  }
+  .time {
+    margin-left: 10px;
+  }
+}
+
+/*=================================================================================
+                                   330
+================================================================================*/
+@media (max-width: 400px) {
+}
+@media (max-width: 380px) {
+  .chatDiv,
+  .commentReply {
+    width: calc(100% - 10px);
+    margin: 15px 5px;
+    padding: 10px 10px;
+  }
+  .replyDivs {
+    width: calc(100% - 5px);
+    margin-left: 5px;
+  }
+}

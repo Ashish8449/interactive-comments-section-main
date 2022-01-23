@@ -63,7 +63,28 @@ function setData(obj) {
       </p>
 
     </div>
+    
   </div>
+  <div class="last-itmes row">
+  <div class="col3">
+ 
+    <div class="additem">
+      <div class="add">
+        <img src="./images/icon-plus.svg" alt="" srcset="" />
+      </div>
+      <div class="number2">${obj.score}</div>
+      <div class="minus">
+        <img src="./images/icon-minus.svg" alt="" srcset="" />
+      </div>
+    </div>
+  </div>
+  <div class="col7">
+    <div class="col2 row reply">
+      <img src="./images/icon-reply.svg" alt="" />
+      <div class="reply">Reply</div>
+    </div>
+  </div>
+</div>
 
 </div>`;
 
@@ -140,7 +161,34 @@ function commentBox(obj) {
       </p>
 
     </div>
+    
   </div>
+  <div class="last-itmes row">
+  <div class="col3">
+  
+    <div class="additem">
+      <div class="add">
+        <img src="./images/icon-plus.svg" alt="" srcset="" />
+      </div>
+      <div class="number2">${obj.score}</div>
+      <div class="minus">
+        <img src="./images/icon-minus.svg" alt="" srcset="" />
+      </div>
+    </div>
+  </div>
+  <div class="col7">
+    <div class="col2 row">
+      <div class="row delete">
+        <img src="./images/icon-delete.svg" alt="" />
+        <div class="delete">Delete</div>
+      </div>
+      <div class="row edit">
+        <img src="./images/icon-edit.svg" alt="" />
+        <div class="edit">Edit</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 </div>`;
 }
@@ -185,8 +233,9 @@ function commentFunc(e) {
   const currentTarget = e.currentTarget;
   const number = currentTarget.querySelector(".number");
   const chatDiv = currentTarget.querySelector(".chatDiv");
-  console.log(chatDiv);
   const boxNum = chatDiv.dataset.value;
+  console.log(chatDiv);
+
   console.log(boxNum);
   if (target.classList.contains("delete")) {
     currentTarget.remove();
@@ -221,10 +270,10 @@ function commentFunc(e) {
     }
   }
   if (target.classList.contains("add")) {
-    number.innerHTML++;
+    number.innerText++;
   }
   if (target.classList.contains("minus")) {
-    if (number.innerHTML>0) number.innerHTML--;
+    if (number.innerHTML > 0) number.innerHTML--;
   }
 }
 
@@ -241,6 +290,7 @@ function divFunc(e) {
   const boxNum = chatDiv.dataset.value;
   const target = e.target;
   const number = currentElement.querySelector(".number");
+  const number2 = currentElement.querySelector(".number2");
   const obj = {
     content: ``,
     createdAt: `1 min ago`,
@@ -274,12 +324,20 @@ function divFunc(e) {
       const commentDiv = document.createElement("div");
 
       console.log(e.target);
+      console.log(currentElement);
+      console.log(boxNum);
 
       /*=============================================================================
                                    add data to ls                                                  
       =============================================================================*/
-
-      updateLs();
+      function updateObjInLs(obj, boxNum) {
+        usersData.comments.forEach((item) => {
+          if (item.id == boxNum) {
+            item.replies.push(obj);
+          }
+        });
+        updateLs();
+      }
 
       /*=============================================================================
                                    added succesfully                                                  
@@ -314,28 +372,21 @@ function divFunc(e) {
     replyBtn.addEventListener("click", clickOnReply);
   }
 
-  function updateScore() {
-    usersData.comments.forEach((item) => {
-      if (item.id == boxNum) {
-        console.log(item);
-        item.score = number.innerText;
-      }
-    });
-  }
-
   if (target.classList.contains("add")) {
     number.innerText = ++number.innerText;
-    updateScore();
+    number2.innerText = ++number2.innerText;
+    obj.score = number.innerText - 1;
 
-    updateLs();
+    updateObjInLs(obj, boxNum);
   }
 
   if (target.classList.contains("minus")) {
     if (number.innerText > 0) {
       number.innerText = --number.innerText;
+      number2.innerText = --number2.innerText;
 
-      updateScore();
-      updateLs();
+      obj.score = number.innerText - 1;
+      updateObjInLs(obj, boxNum);
     }
     /*=============================================================================
                                  add event lisner on click on add                                                   
@@ -353,9 +404,11 @@ function getData() {
     .then((data) => {
       console.log(data);
       console.log(usersData);
-      usersData = usersData ? usersData : data;
-
-      data.comments.forEach((comment) => {
+      if (!usersData) {
+        usersData = data;
+        console.log("set user data to data");
+      }
+      usersData.comments.forEach((comment) => {
         const div = document.createElement("div");
 
         div.innerHTML = setData(comment);
@@ -363,7 +416,9 @@ function getData() {
         chatBox.appendChild(div);
 
         // to store replies
-
+        if (comment.user.username === "juliusomo") {
+          div.innerHTML = commentBox(comment);
+        }
         const replyDivs = document.createElement("div");
         replyDivs.classList.add("replyDivs");
         let check = 0;
@@ -398,7 +453,9 @@ function getData() {
         /*=============================================================================
                                      addevent listner                                                  
         =============================================================================*/
-        div.addEventListener("click", divFunc);
+        if (comment.user.username === "juliusomo") {
+          div.addEventListener("click", commentFunc);
+        } else div.addEventListener("click", divFunc);
       });
     });
 }

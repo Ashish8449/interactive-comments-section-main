@@ -8,6 +8,7 @@
 }
 body {
   background: hsl(228, 33%, 97%);
+  overflow-x: hidden;
 }
 .container {
   max-width: 1440px;
@@ -17,18 +18,15 @@ body {
 }
 
 .col3 {
-  width: calc(10%);
-  /* border: 2px solid red; */
-
-  /* height: 180px; */
+  width: calc(10% - 20px);
+  margin: 0 10px;
 }
 .add,
 .minus {
   cursor: pointer;
+  margin: 0px 15px;
 }
 .additem {
-  width: 80%;
-
   border: 2px solid hsl(223, 19%, 93%);
   border-radius: 8px;
   padding: 10px 10px;
@@ -39,7 +37,8 @@ body {
   align-items: center;
   background: hsl(223, 19%, 93%);
 }
-.number {
+.number,
+.number2 {
   margin: 5px auto;
   font-weight: 700;
   color: hsl(238, 40%, 52%);
@@ -60,13 +59,16 @@ body {
 .chatDiv,
 .commentReply {
   width: 100%;
-  padding: 20px 10px;
-  margin: 15px 0;
 
+  margin: 15px 0;
+  padding: 10px 5px;
   box-shadow: -1px -2px 20px 0px rgb(58 54 54 / 12%), 0 1px 2px rgb(0 0 0 / 24%);
 
   transition: all 0.25s ease-in-out;
   border-radius: 5px;
+}
+.commentReply {
+  padding: 20px 10px;
 }
 
 .col8 {
@@ -74,8 +76,6 @@ body {
   /* border: 2px solid blueviolet; */
 }
 .col2 {
-  width: 20%;
-
   justify-content: flex-end;
 
   align-items: center;
@@ -194,5 +194,14 @@ p {
 }
 .replyDivs {
   padding-left: 40px;
-  border-left: 1px solid hsl(239, 57%, 85%);
+  border-left: 1px solid hsl(228deg 9% 81%);
+}
+
+.last-itmes .col3 .additem {
+  flex-direction: row;
+}
+.last-itmes {
+  display: none;
+  justify-content: flex-start;
+  align-items: center;
 }
